@@ -90,3 +90,9 @@
 
 ;; turn off backup file
 (setq make-backup-files nil)
+
+;; auto pair
+;; (electric-pair-mode t)
+
+;; auto indent
+(electric-indent-mode)

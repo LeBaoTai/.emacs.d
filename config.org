@@ -8,6 +8,7 @@
   - [[#elpaca-package-manager][Elpaca Package Manager]]
   - [[#load-evil-mode][Load Evil Mode]]
   - [[#general-keybindings][General Keybindings]]
+- [[#add-path][ADD PATH]]
 - [[#all-the-icons][ALL THE ICONS]]
 - [[#buffer-move][BUFFER-MOVE]]
 - [[#fonts][FONTS]]
@@ -40,6 +41,8 @@
 - [[#language][LANGUAGE]]
   - [[#rust][Rust]]
   - [[#cpp][CPP]]
+  - [[#jsts][JS/TS]]
+- [[#smartparens][SMARTPARENS]]
 - [[#flycheck][FLYCHECK]]
 - [[#lsp-mode][LSP MODE]]
   - [[#lsp-mode-1][LSP Mode]]
@@ -290,95 +293,99 @@
 
 #+end_src
 
+* ADD PATH
+    #+begin_src emacs-lisp
+    (add-to-list 'load-path "~/.emacs.d/lisp/")
+    #+end_src
 
 * ALL THE ICONS
-This is an icon set that can be used with dashboard, dired, ibuffer and other Emacs programs.
-  
-#+begin_src emacs-lisp
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p))
+    This is an icon set that can be used with dashboard, dired, ibuffer and other Emacs programs.
 
-(use-package all-the-icons-dired
-  :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
-  
-#+end_src
+    #+begin_src emacs-lisp
+    (use-package all-the-icons
+    :ensure t
+    :if (display-graphic-p))
+
+    (use-package all-the-icons-dired
+    :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
+
+    #+end_src
 
 * BUFFER-MOVE
-Creating some functions to allow us to easily move windows (splits) around.  
-The following block of code was taken from buffer-move.el found on the EmacsWiki:
-https://www.emacswiki.org/emacs/buffer-move.el
+    Creating some functions to allow us to easily move windows (splits) around.  
+    The following block of code was taken from buffer-move.el found on the EmacsWiki:
+    https://www.emacswiki.org/emacs/buffer-move.el
 
-#+begin_src emacs-lisp
-(require 'windmove)
+    #+begin_src emacs-lisp
+    (require 'windmove)
 
-;;;###autoload
-(defun buf-move-up ()
-  "Swap the current buffer and the buffer above the split.
-If there is no split, ie now window above the current one, an
-error is signaled."
-;;  "Switches between the current buffer, and the buffer above the
-;;  split, if possible."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'up))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (null other-win)
-        (error "No window above this one")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
+    ;;;###autoload
+    (defun buf-move-up ()
+    "Swap the current buffer and the buffer above the split.
+    If there is no split, ie now window above the current one, an
+    error is signaled."
+    ;;  "Switches between the current buffer, and the buffer above the
+    ;;  split, if possible."
+    (interactive)
+    (let* ((other-win (windmove-find-other-window 'up))
+    (buf-this-buf (window-buffer (selected-window))))
+        (if (null other-win)
+            (error "No window above this one")
+        ;; swap top with this one
+        (set-window-buffer (selected-window) (window-buffer other-win))
+        ;; move this one to top
+        (set-window-buffer other-win buf-this-buf)
+        (select-window other-win))))
 
-;;;###autoload
-(defun buf-move-down ()
-"Swap the current buffer and the buffer under the split.
-If there is no split, ie now window under the current one, an
-error is signaled."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'down))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (or (null other-win) 
-            (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win))))
-        (error "No window under this one")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
+    ;;;###autoload
+    (defun buf-move-down ()
+    "Swap the current buffer and the buffer under the split.
+    If there is no split, ie now window under the current one, an
+    error is signaled."
+    (interactive)
+    (let* ((other-win (windmove-find-other-window 'down))
+    (buf-this-buf (window-buffer (selected-window))))
+        (if (or (null other-win) 
+                (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win))))
+            (error "No window under this one")
+        ;; swap top with this one
+        (set-window-buffer (selected-window) (window-buffer other-win))
+        ;; move this one to top
+        (set-window-buffer other-win buf-this-buf)
+        (select-window other-win))))
 
-;;;###autoload
-(defun buf-move-left ()
-"Swap the current buffer and the buffer on the left of the split.
-If there is no split, ie now window on the left of the current
-one, an error is signaled."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'left))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (null other-win)
-        (error "No left split")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
+    ;;;###autoload
+    (defun buf-move-left ()
+    "Swap the current buffer and the buffer on the left of the split.
+    If there is no split, ie now window on the left of the current
+    one, an error is signaled."
+    (interactive)
+    (let* ((other-win (windmove-find-other-window 'left))
+    (buf-this-buf (window-buffer (selected-window))))
+        (if (null other-win)
+            (error "No left split")
+        ;; swap top with this one
+        (set-window-buffer (selected-window) (window-buffer other-win))
+        ;; move this one to top
+        (set-window-buffer other-win buf-this-buf)
+        (select-window other-win))))
 
-;;;###autoload
-(defun buf-move-right ()
-"Swap the current buffer and the buffer on the right of the split.
-If there is no split, ie now window on the right of the current
-one, an error is signaled."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'right))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (null other-win)
-        (error "No right split")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
-#+end_src
+    ;;;###autoload
+    (defun buf-move-right ()
+    "Swap the current buffer and the buffer on the right of the split.
+    If there is no split, ie now window on the right of the current
+    one, an error is signaled."
+    (interactive)
+    (let* ((other-win (windmove-find-other-window 'right))
+    (buf-this-buf (window-buffer (selected-window))))
+        (if (null other-win)
+            (error "No right split")
+        ;; swap top with this one
+        (set-window-buffer (selected-window) (window-buffer other-win))
+        ;; move this one to top
+        (set-window-buffer other-win buf-this-buf)
+        (select-window other-win))))
+    #+end_src
 
 * FONTS
 Defining the various fonts that Emacs will use.
@@ -636,26 +643,26 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
 ** Vterm-Toggle 
 [[https://github.com/jixiuf/vterm-toggle][vterm-toggle]] toggles between the vterm buffer and whatever buffer you are editing.
 
-#+begin_src emacs-lisp
-(use-package vterm-toggle
-  :after vterm
-  :config
-  (setq vterm-toggle-fullscreen-p nil)
-  (setq vterm-toggle-scope 'project)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                     (let ((buffer (get-buffer buffer-or-name)))
-                       (with-current-buffer buffer
-                         (or (equal major-mode 'vterm-mode)
-                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                  (display-buffer-reuse-window display-buffer-same-window)
-                  ;; (display-buffer-reuse-window display-buffer-in-direction)
-                  ;; display-buffer-in-direction/direction/dedicated is added in emacs27
-                  ;; (direction . side)
-                  ;;(dedicated . t) ;dedicated is supported in emacs27
-                  (reusable-frames . visible)
-                  (window-height . 0.3))))
-#+end_src
+    #+begin_src emacs-lisp
+    (use-package vterm-toggle
+    :after vterm
+    :config
+    (setq vterm-toggle-fullscreen-p nil)
+    (setq vterm-toggle-scope 'project)
+    (add-to-list 'display-buffer-alist
+                '((lambda (buffer-or-name _)
+                        (let ((buffer (get-buffer buffer-or-name)))
+                        (with-current-buffer buffer
+                            (or (equal major-mode 'vterm-mode)
+                                (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                    (display-buffer-reuse-window display-buffer-same-window)
+                    ;; (display-buffer-reuse-window display-buffer-in-direction)
+                    ;; display-buffer-in-direction/direction/dedicated is added in emacs27
+                    ;; (direction . side)
+                    ;;(dedicated . t) ;dedicated is supported in emacs27
+                    (reusable-frames . visible)
+                    (window-height . 0.3))))
+    #+end_src
 
 * SUDO EDIT
 [[https://github.com/nflath/sudo-edit][sudo-edit]] gives us the ability to open files with sudo privileges or switch over to editing with sudo privileges if we initially opened the file without such privileges.
@@ -720,22 +727,23 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
 ** Rust
     #+begin_src emacs-lisp
     (use-package rustic
-    :ensure
-    :config
     ;; uncomment for less flashiness
     ;; (setq lsp-eldoc-hook nil)
     ;; (setq lsp-enable-symbol-highlighting nil)
     ;; (setq lsp-signature-auto-activate nil)
+    :hook (rustic-mode-local-vars . rustic-setup-lsp)
+    :hook (rustic-mode . lsp-deferred)
+    :config
     (setq   rustic-babel-format-src-block nil
             rustic-format-trigger         nil
             rustic-format-on-save         t)
+    :init
     (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)
-    (add-hook 'rust-mode-hook
+    (add-hook 'rustic-mode-hook
             (lambda ()
                 (setq indent-tabs-mode nil)
                 (setq tab-width 2)
                 (setq rust-indent-offset 2))))
-    (setq rustic-lsp-server 'rust-analyzer)
     (defun rk/rustic-mode-hook ()
     ;; so that run C-c C-c C-r works without having to confirm, but don't try to
     ;; save rust buffers that are not file visiting. Once
@@ -744,6 +752,9 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
     (when buffer-file-name
         (setq-local buffer-save-without-query t))
     (add-hook 'before-save-hook 'lsp-format-buffer nil t))
+
+    ;; rustfmt
+    (setq rustic-lsp-server 'rust-analyzer)
     #+end_src
     
 ** CPP
@@ -757,6 +768,53 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
     :config
     (require 'compile))
     #+end_src>
+    
+** JS/TS
+    #+begin_src emacs-lisp
+    (use-package prettier-js
+    :defer t
+    :after (rjsx-mode web-mode typescript-mode)
+    :hook (rjsx-mode . prettier-js-mode)
+    :hook (js-mode . prettier-js-mode)
+    :hook (typescript-mode . prettier-js-mode)
+    :config
+    (setq prettier-js-args '("--trailing-comma" "all" "--bracket-spacing" "true")))
+
+    (use-package typescript-mode
+    :defer t
+    :hook (typescript-mode     . rainbow-delimiters-mode)
+    :hook (typescript-mode     . lsp-deferred)
+    :hook (typescript-mode     . prettier-js-mode)
+    :hook (typescript-tsx-mode . rainbow-delimiters-mode)
+    :hook (typescript-tsx-mode . lsp-deferred)
+    :hook (typescript-tsx-mode . prettier-js-mode)
+    :hook (typescript-tsx-mode . eglot-ensure)
+    :commands typescript-tsx-mode
+    :after flycheck
+    :init
+    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
+    (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+    :config
+    (setq typescript-indent-level 2)
+    (with-eval-after-load 'flycheck
+        (flycheck-add-mode 'javascript-eslint 'web-mode)
+        (flycheck-add-mode 'javascript-eslint 'typescript-mode)
+        (flycheck-add-mode 'javascript-eslint 'typescript-tsx-mode)
+        (flycheck-add-mode 'typescript-tslint 'typescript-tsx-mode))
+    (when (fboundp 'web-mode)
+        (define-derived-mode typescript-tsx-mode web-mode "TypeScript-TSX"))
+    (autoload 'js2-line-break "js2-mode" nil t))
+
+    #+end_src
+    
+* SMARTPARENS
+#+begin_src emacs-lisp
+    (add-to-list 'load-path "~/.emacs.d/lisp/smartparens")
+    (use-package smartparens
+    :defer t
+    :hook (prog-mode . smartparens-mode))
+
+#+end_src
 
 * FLYCHECK
     #+begin_src emacs-lisp
@@ -773,28 +831,35 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
         ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
         (setq lsp-keymap-prefix "C-c l")
         :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-                (rustic-mode  . lsp)
-                (c++-mode  . lsp)
+                (rustic-mode  . lsp-deferred)
+                (c++-mode  . lsp-deferred)
+                (typescript-mode . lsp-deferred)
                 ;; if you want which-key integration
-                (lsp-mode . lsp-enable-which-key-integration))
-        :commands lsp
+                (lsp-mode . lsp-enable-which-key-integration)
+                (lsp-mode . lsp-ui-mode))
+        :commands (lsp lsp-deferred)
         :custom
         ;; what to use when checking on-save. "check" is default, I prefer clippy
-        (lsp-rust-analyzer-cargo-watch-command "clippy")
         (lsp-eldoc-render-all t)
         (lsp-eldoc-enable-hover nil)
         (lsp-idle-delay 0.5)
-        (lsp-enable-indentation nil)
         ;; enable / disable the hints as you prefer:
         (lsp-inlay-hint-enable t)
         ;; These are optional configurations. See https://emacs-lsp.github.io/lsp-mode/page/lsp-rust-analyzer/#lsp-rust-analyzer-display-chaining-hints for a full list
-        ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+
+        ;; RUST
+        (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+        (lsp-rust-analyzer-cargo-watch-command "clippy")
         (lsp-rust-analyzer-display-lifetime-elision-hints-enable "always")
         (lsp-rust-analyzer-display-chaining-hints t)
         (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
         (lsp-rust-analyzer-display-closure-return-type-hints t)
         (lsp-rust-analyzer-display-parameter-hints nil)
         (lsp-rust-analyzer-display-reborrow-hints nil)
+
+        ;; TS
+        (lsp-javascript-display-return-type-hints t)
+        (lsp-javascript-display-variable-type-hints t)
         :config
         (add-hook 'lsp-mode-hook 'lsp-ui-mode))
     #+end_src
